@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 #
-# Copyright (C) 2014 Miguel Botón <waninkoko@gmail.com>
 # Copyright (C) 2014 Zhang Rui <bbcallen@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +34,7 @@ fi
 
 
 FF_BUILD_ROOT=`pwd`
-FF_ANDROID_PLATFORM=android-9
+FF_ANDROID_PLATFORM=android-16
 
 
 FF_BUILD_NAME=
@@ -68,29 +67,36 @@ if [ "$FF_ARCH" = "armv7a" ]; then
     FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
 	
     FF_CROSS_PREFIX=arm-linux-androideabi
-	FF_TOOLCHAIN_NAME=${FF_CROSS_PREFIX}-${FF_GCC_VER}
+    FF_TOOLCHAIN_NAME=${FF_CROSS_PREFIX}-${FF_GCC_VER}
 
-    FF_PLATFORM_CFG_FLAGS="android-armv7"
+    FF_PLATFORM_CFG_FLAGS="android-arm"
 
 elif [ "$FF_ARCH" = "armv5" ]; then
     FF_BUILD_NAME=openssl-armv5
     FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
 	
     FF_CROSS_PREFIX=arm-linux-androideabi
-	FF_TOOLCHAIN_NAME=${FF_CROSS_PREFIX}-${FF_GCC_VER}
+    FF_TOOLCHAIN_NAME=${FF_CROSS_PREFIX}-${FF_GCC_VER}
 
-    FF_PLATFORM_CFG_FLAGS="android"
+    FF_PLATFORM_CFG_FLAGS="android-arm"
+
+elif [ "$FF_ARCH" = "mips" ]; then
+    FF_BUILD_NAME=openssl-mips
+    FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
+	
+    FF_CROSS_PREFIX=mipsel-linux-android
+    FF_TOOLCHAIN_NAME=${FF_CROSS_PREFIX}-${FF_GCC_VER}
+
+    FF_PLATFORM_CFG_FLAGS="android-mips"
 
 elif [ "$FF_ARCH" = "x86" ]; then
     FF_BUILD_NAME=openssl-x86
     FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
 	
     FF_CROSS_PREFIX=i686-linux-android
-	FF_TOOLCHAIN_NAME=x86-${FF_GCC_VER}
+    FF_TOOLCHAIN_NAME=x86-${FF_GCC_VER}
 
-    FF_PLATFORM_CFG_FLAGS="android-x86"
-
-    FF_CFG_FLAGS="$FF_CFG_FLAGS no-asm"
+    FF_PLATFORM_CFG_FLAGS="android-x86 no-asm"
 
 elif [ "$FF_ARCH" = "x86_64" ]; then
     FF_ANDROID_PLATFORM=android-21
@@ -101,7 +107,7 @@ elif [ "$FF_ARCH" = "x86_64" ]; then
     FF_CROSS_PREFIX=x86_64-linux-android
     FF_TOOLCHAIN_NAME=${FF_CROSS_PREFIX}-${FF_GCC_64_VER}
 
-    FF_PLATFORM_CFG_FLAGS="linux-x86_64"
+    FF_PLATFORM_CFG_FLAGS="android-x86_64"
 
 elif [ "$FF_ARCH" = "arm64" ]; then
     FF_ANDROID_PLATFORM=android-21
@@ -112,7 +118,7 @@ elif [ "$FF_ARCH" = "arm64" ]; then
     FF_CROSS_PREFIX=aarch64-linux-android
     FF_TOOLCHAIN_NAME=${FF_CROSS_PREFIX}-${FF_GCC_64_VER}
 
-    FF_PLATFORM_CFG_FLAGS="linux-aarch64"
+    FF_PLATFORM_CFG_FLAGS="android-arm64"
 
 else
     echo "unknown architecture $FF_ARCH";
@@ -155,6 +161,9 @@ echo "--------------------"
 echo "[*] check openssl env"
 echo "--------------------"
 export PATH=$FF_TOOLCHAIN_PATH/bin:$PATH
+export CC="clang"
+export CXX="clang++"
+export AS="$CC"
 
 export COMMON_FF_CFG_FLAGS=
 
@@ -164,8 +173,9 @@ FF_CFG_FLAGS="$FF_CFG_FLAGS $COMMON_FF_CFG_FLAGS"
 # Standard options:
 FF_CFG_FLAGS="$FF_CFG_FLAGS zlib-dynamic"
 FF_CFG_FLAGS="$FF_CFG_FLAGS no-shared"
-FF_CFG_FLAGS="$FF_CFG_FLAGS --openssldir=$FF_PREFIX"
+FF_CFG_FLAGS="$FF_CFG_FLAGS --prefix=$FF_PREFIX"
 FF_CFG_FLAGS="$FF_CFG_FLAGS --cross-compile-prefix=${FF_CROSS_PREFIX}-"
+FF_CFG_FLAGS="$FF_CFG_FLAGS --sysroot=$FF_SYSROOT"
 FF_CFG_FLAGS="$FF_CFG_FLAGS $FF_PLATFORM_CFG_FLAGS"
 
 #--------------------
@@ -178,7 +188,7 @@ cd $FF_SOURCE
 #    echo 'reuse configure'
 #else
     echo "./Configure $FF_CFG_FLAGS"
-    ./Configure $FF_CFG_FLAGS
+    ANDROID_NDK=$FF_TOOLCHAIN_PATH ./Configure $FF_CFG_FLAGS
 #        --extra-cflags="$FF_CFLAGS $FF_EXTRA_CFLAGS" \
 #        --extra-ldflags="$FF_EXTRA_LDFLAGS"
 #fi

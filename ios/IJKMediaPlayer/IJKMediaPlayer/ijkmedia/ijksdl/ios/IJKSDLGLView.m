@@ -24,6 +24,7 @@
  */
 
 #import "IJKSDLGLView.h"
+
 #include "ijksdl/ijksdl_timer.h"
 #include "ijksdl/ios/ijksdl_ios.h"
 #include "ijksdl/ijksdl_gles2.h"
@@ -35,6 +36,7 @@ typedef NS_ENUM(NSInteger, IJKSDLGLViewApplicationState) {
 };
 
 @interface IJKSDLGLView()
+@property (nonatomic,weak) id<MDVideoFrameCallback> callback;
 @property(atomic,strong) NSRecursiveLock *glActiveLock;
 @property(atomic) BOOL glActivePaused;
 @end
@@ -362,6 +364,25 @@ typedef NS_ENUM(NSInteger, IJKSDLGLViewApplicationState) {
 // NOTE: overlay could be NULl
 - (void)displayInternal: (SDL_VoutOverlay *) overlay
 {
+    if ([self.callback respondsToSelector:@selector(onFrameAvailable:)]) {
+        if (!overlay) {
+            return;
+        }
+        
+        MDVideoFrame* frame = malloc(sizeof(MDVideoFrame));
+        
+        frame -> w = overlay->w;
+        frame -> h = overlay->h;
+        frame -> format = overlay->format;
+        frame -> planes = overlay->planes;
+        frame -> pitches = overlay->pitches;
+        frame -> pixels = overlay->pixels;
+        [self.callback onFrameAvailable:(frame)];
+        
+        free(frame);
+        return;
+    }
+    
     if (![self setupRenderer:overlay]) {
         if (!overlay && !_renderer) {
             NSLog(@"IJKSDLGLView: setupDisplay not ready\n");
@@ -404,6 +425,11 @@ typedef NS_ENUM(NSInteger, IJKSDLGLViewApplicationState) {
     } else {
         _frameCount++;
     }
+}
+
+- (void) setFrameCallback:(id<MDVideoFrameCallback>) callback
+{
+    self.callback = callback;
 }
 
 #pragma mark AppDelegate

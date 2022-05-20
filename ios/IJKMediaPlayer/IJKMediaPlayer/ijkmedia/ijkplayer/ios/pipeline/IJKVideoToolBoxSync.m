@@ -40,6 +40,7 @@
 #include "ff_fferror.h"
 #include "ff_ffmsg.h"
 #include "ijksdl/ios/ijksdl_vout_overlay_videotoolbox.h"
+#include "ijkplayer/ijkavformat/ijkavformat.h"
 
 #define IJK_VTB_FCC_AVCC   SDL_FOURCC('C', 'c', 'v', 'a')
 

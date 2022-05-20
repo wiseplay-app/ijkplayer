@@ -109,14 +109,14 @@ static void *KVO_AVPlayerItem_playbackBufferEmpty       = &KVO_AVPlayerItem_play
 @property(nonatomic, readwrite) NSTimeInterval playableDuration;
 @property(nonatomic, readwrite) NSInteger bufferingProgress;
 
-@property(nonatomic, readwrite)  BOOL isPreparedToPlay;
+@property(nonatomic, readwrite) BOOL isPreparedToPlay;
 
 @end
 
 @implementation IJKAVMoviePlayerController {
     NSURL           *_playUrl;
+    NSDictionary    *_playHeaders;
     AVURLAsset      *_playAsset;
-    AVPlayerItem    *_playerItem;
     AVPlayer        *_player;
     IJKAVPlayerLayerView * _avView;
     
@@ -167,6 +167,7 @@ static void *KVO_AVPlayerItem_playbackBufferEmpty       = &KVO_AVPlayerItem_play
 static IJKAVMoviePlayerController* instance;
 
 - (id)initWithContentURL:(NSURL *)aUrl
+             withHeaders:(NSDictionary *)headers
 {
     self = [super init];
     if (self != nil) {
@@ -174,6 +175,7 @@ static IJKAVMoviePlayerController* instance;
         self.shouldAutoplay = NO;
 
         _playUrl = aUrl;
+        _playHeaders = headers;
 
         _avView = [[IJKAVPlayerLayerView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         self.view = _avView;
@@ -203,16 +205,18 @@ static IJKAVMoviePlayerController* instance;
 }
 
 + (id)getInstance:(NSString *)aUrl
+      withHeaders:(NSDictionary *)headers
 {
     if (instance == nil) {
-        instance = [[IJKAVMoviePlayerController alloc] initWithContentURLString:aUrl];
+        instance = [[IJKAVMoviePlayerController alloc] initWithContentURLString:aUrl withHeaders:headers];
     } else {
-        instance = [instance initWithContentURLString:aUrl];
+        instance = [instance initWithContentURLString:aUrl withHeaders:headers];
     }
     return instance;
 }
 
 - (id)initWithContentURLString:(NSString *)aUrl
+                   withHeaders:(NSDictionary *)headers
 {
     NSURL *url;
     if (aUrl == nil) {
@@ -225,7 +229,7 @@ static IJKAVMoviePlayerController* instance;
     else {
         url = [NSURL URLWithString:aUrl];
     }
-    self = [self initWithContentURL:url];
+    self = [self initWithContentURL:url withHeaders:headers];
     if (self != nil) {
         
     }
@@ -244,7 +248,13 @@ static IJKAVMoviePlayerController* instance;
 
 - (void)prepareToPlay
 {
-    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:_playUrl options:nil];
+    NSDictionary<NSString *, id> *options = nil;
+
+    if (_playHeaders != nil) {
+        options = @{@"AVURLAssetHTTPHeaderFieldsKey": _playHeaders};
+    }
+
+    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:_playUrl options:options];
     NSArray *requestedKeys = @[@"playable"];
     
     _playAsset = asset;

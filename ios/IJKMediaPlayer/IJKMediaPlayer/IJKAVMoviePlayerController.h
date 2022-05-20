@@ -68,12 +68,21 @@
 
  */
 
+#import <AVFoundation/AVFoundation.h>
+
 #import "IJKMediaPlayback.h"
 
 @interface IJKAVMoviePlayerController : NSObject <IJKMediaPlayback>
 
-- (id)initWithContentURL:(NSURL *)aUrl;
-- (id)initWithContentURLString:(NSString *)aUrl;
-+ (id)getInstance:(NSString *)aUrl;
+@property(nonatomic, readonly) AVPlayerItem *playerItem;
+
+- (id)initWithContentURL:(NSURL *)aUrl
+             withHeaders:(NSDictionary *)headers;
+
+- (id)initWithContentURLString:(NSString *)aUrl
+                   withHeaders:(NSDictionary *)headers;
+
++ (id)getInstance:(NSString *)aUrl
+      withHeaders:(NSDictionary *)headers;
 
 @end

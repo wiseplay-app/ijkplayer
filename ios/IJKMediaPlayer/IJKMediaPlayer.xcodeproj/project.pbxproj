@@ -144,6 +144,9 @@
 		54A029B81D4700E6001C61C1 /* ijklongurl.c in Sources */ = {isa = PBXBuildFile; fileRef = 54A029B31D4700E6001C61C1 /* ijklongurl.c */; };
 		54A029B91D4700E6001C61C1 /* ijksegment.c in Sources */ = {isa = PBXBuildFile; fileRef = 54A029B41D4700E6001C61C1 /* ijksegment.c */; };
 		54A029BA1D4700E6001C61C1 /* ijkurlhook.c in Sources */ = {isa = PBXBuildFile; fileRef = 54A029B51D4700E6001C61C1 /* ijkurlhook.c */; };
+		670FBB551E4203E900AD84D7 /* MDExt.h in Headers */ = {isa = PBXBuildFile; fileRef = 670FBB531E4203E900AD84D7 /* MDExt.h */; };
+		67DFD1571CBD13F700B909D2 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67DFD1551CBD13F700B909D2 /* libcrypto.a */; };
+		67DFD1581CBD13F700B909D2 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67DFD1561CBD13F700B909D2 /* libssl.a */; };
 		54CF8A331E1526F800309DD5 /* ijkio.c in Sources */ = {isa = PBXBuildFile; fileRef = 54CF8A291E1526F800309DD5 /* ijkio.c */; };
 		54CF8A341E1526F800309DD5 /* ijkioapplication.c in Sources */ = {isa = PBXBuildFile; fileRef = 54CF8A2A1E1526F800309DD5 /* ijkioapplication.c */; };
 		54CF8A351E1526F800309DD5 /* ijkioapplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 54CF8A2B1E1526F800309DD5 /* ijkioapplication.h */; };
@@ -296,6 +299,9 @@
 		54A029B31D4700E6001C61C1 /* ijklongurl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ijklongurl.c; sourceTree = "<group>"; };
 		54A029B41D4700E6001C61C1 /* ijksegment.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ijksegment.c; sourceTree = "<group>"; };
 		54A029B51D4700E6001C61C1 /* ijkurlhook.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ijkurlhook.c; sourceTree = "<group>"; };
+		670FBB531E4203E900AD84D7 /* MDExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDExt.h; sourceTree = "<group>"; };
+		67DFD1551CBD13F700B909D2 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = ../build/universal/lib/libcrypto.a; sourceTree = "<group>"; };
+		67DFD1561CBD13F700B909D2 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = ../build/universal/lib/libssl.a; sourceTree = "<group>"; };
 		54CF8A291E1526F800309DD5 /* ijkio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ijkio.c; sourceTree = "<group>"; };
 		54CF8A2A1E1526F800309DD5 /* ijkioapplication.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ijkioapplication.c; sourceTree = "<group>"; };
 		54CF8A2B1E1526F800309DD5 /* ijkioapplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ijkioapplication.h; sourceTree = "<group>"; };
@@ -487,6 +493,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67DFD1571CBD13F700B909D2 /* libcrypto.a in Frameworks */,
+				67DFD1581CBD13F700B909D2 /* libssl.a in Frameworks */,
 				E653C6F61BCE5A750016835A /* libavcodec.a in Frameworks */,
 				E653C6F81BCE5A750016835A /* libavfilter.a in Frameworks */,
 				E653C6FA1BCE5A750016835A /* libavformat.a in Frameworks */,
@@ -922,6 +930,7 @@
 				E68B7ACE1C1E97B0001DE241 /* IJKSDLHudViewCell.m */,
 				E68B7AC31C1E7F20001DE241 /* IJKSDLHudViewController.h */,
 				E68B7AC41C1E7F20001DE241 /* IJKSDLHudViewController.m */,
+				670FBB531E4203E900AD84D7 /* MDExt.h */,
 			);
 			name = ios;
 			path = ../../ios/IJKMediaPlayer/IJKMediaPlayer/ijkmedia/ijksdl/ios;
@@ -1024,6 +1033,7 @@
 				54CF8A3B1E1526F800309DD5 /* ijkioprotocol.h in Headers */,
 				E654EAE71B6B295200B0F2D0 /* IJKMediaPlayback.h in Headers */,
 				E654EAED1B6B29C100B0F2D0 /* IJKMediaPlayer.h in Headers */,
+				670FBB551E4203E900AD84D7 /* MDExt.h in Headers */,
 				E6C459961C7030B6004831EC /* internal.h in Headers */,
 				5407EC2D1DF81D2600457BFE /* IJKVideoToolBoxSync.h in Headers */,
 				E654EAE91B6B295200B0F2D0 /* IJKMPMoviePlayerController.h in Headers */,

@@ -65,7 +65,7 @@ import tv.danmaku.ijk.media.player.pragma.DebugLog;
  *
  *         Java wrapper of ffplay.
  */
-public final class IjkMediaPlayer extends AbstractMediaPlayer {
+public class IjkMediaPlayer extends AbstractMediaPlayer implements IMediaOptions {
     private final static String TAG = IjkMediaPlayer.class.getName();
 
     private static final int MEDIA_NOP = 0; // interface test message
@@ -620,7 +620,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
         return trackInfos.toArray(new IjkTrackInfo[trackInfos.size()]);
     }
 
-    // TODO: @Override
+    @Override
     public int getSelectedTrack(int trackType) {
         switch (trackType) {
             case ITrackInfo.MEDIA_TRACK_TYPE_VIDEO:
@@ -634,14 +634,12 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
         }
     }
 
-    // experimental, should set DEFAULT_MIN_FRAMES and MAX_MIN_FRAMES to 25
-    // TODO: @Override
+    @Override
     public void selectTrack(int track) {
         _setStreamSelected(track, true);
     }
 
-    // experimental, should set DEFAULT_MIN_FRAMES and MAX_MIN_FRAMES to 25
-    // TODO: @Override
+    @Override
     public void deselectTrack(int track) {
         _setStreamSelected(track, false);
     }
@@ -746,11 +744,13 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
 
     private native int _getLoopCount();
 
+    @Override
     public void setSpeed(float speed) {
         _setPropertyFloat(FFP_PROP_FLOAT_PLAYBACK_RATE, speed);
     }
 
-    public float getSpeed(float speed) {
+    @Override
+    public float getSpeed() {
         return _getPropertyFloat(FFP_PROP_FLOAT_PLAYBACK_RATE, .0f);
     }
 

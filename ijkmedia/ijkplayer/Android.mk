@@ -26,7 +26,6 @@ include $(CLEAR_VARS)
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
 LOCAL_CFLAGS += -mfloat-abi=soft
 endif
-LOCAL_CFLAGS += -std=c99
 LOCAL_LDLIBS += -llog -landroid
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)
@@ -44,7 +43,6 @@ LOCAL_SRC_FILES += ijkplayer.c
 LOCAL_SRC_FILES += pipeline/ffpipeline_ffplay.c
 LOCAL_SRC_FILES += pipeline/ffpipenode_ffplay_vdec.c
 
-LOCAL_SRC_FILES += android/ffmpeg_api_jni.c
 LOCAL_SRC_FILES += android/ijkplayer_android.c
 LOCAL_SRC_FILES += android/ijkplayer_jni.c
 

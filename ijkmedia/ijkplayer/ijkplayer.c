@@ -150,7 +150,7 @@ void ijkmp_set_frame_at_time(IjkMediaPlayer *mp, const char *path, int64_t start
 {
     assert(mp);
 
-    MPTRACE("%s(%s,%lld,%lld,%d,%d)\n", __func__, path, start_time, end_time, num, definition);
+    MPTRACE("%s(%s,%"PRId64",%"PRId64",%d,%d)\n", __func__, path, start_time, end_time, num, definition);
     ffp_set_frame_at_time(mp->ffplayer, path, start_time, end_time, num, definition);
     MPTRACE("%s()=void\n", __func__);
 }

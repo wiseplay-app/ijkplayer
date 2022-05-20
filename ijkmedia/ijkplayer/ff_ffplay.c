@@ -528,7 +528,7 @@ static int convert_image(FFPlayer *ffp, AVFrame *src_frame, int64_t src_frame_pt
     if (ret >= 0 && got_packet > 0) {
         strcpy(file_path, img_info->img_path);
         strcat(file_path, "/");
-        sprintf(file_name, "%lld", src_frame_pts);
+        sprintf(file_name, "%" PRId64, src_frame_pts);
         strcat(file_name, ".png");
         strcat(file_path, file_name);
 
@@ -591,7 +591,7 @@ static int decoder_decode_frame(FFPlayer *ffp, Decoder *d, AVFrame *frame, AVSub
                         if (ret >= 0) {
                             AVRational tb = (AVRational){1, frame->sample_rate};
                             if (frame->pts != AV_NOPTS_VALUE)
-                                frame->pts = av_rescale_q(frame->pts, av_codec_get_pkt_timebase(d->avctx), tb);
+                                frame->pts = av_rescale_q(frame->pts, d->avctx->pkt_timebase, tb);
                             else if (d->next_pts != AV_NOPTS_VALUE)
                                 frame->pts = av_rescale_q(d->next_pts, d->next_pts_tb, tb);
                             if (frame->pts != AV_NOPTS_VALUE) {
@@ -1534,7 +1534,7 @@ static int queue_picture(FFPlayer *ffp, AVFrame *src_frame, double pts, double d
                         is->accurate_seek_start_time = now;
                     }
                     SDL_UnlockMutex(is->accurate_seek_mutex);
-                    av_log(NULL, AV_LOG_INFO, "video accurate_seek start, is->seek_pos=%lld, pts=%lf, is->accurate_seek_time = %lld\n", is->seek_pos, pts, is->accurate_seek_start_time);
+                    av_log(NULL, AV_LOG_INFO, "video accurate_seek start, is->seek_pos=%"PRId64", pts=%lf, is->accurate_seek_time = %"PRId64"\n", is->seek_pos, pts, is->accurate_seek_start_time);
                 }
                 is->drop_vframe_count++;
 
@@ -1557,11 +1557,11 @@ static int queue_picture(FFPlayer *ffp, AVFrame *src_frame, double pts, double d
                 if ((now - is->accurate_seek_start_time) <= ffp->accurate_seek_timeout) {
                     return 1;  // drop some old frame when do accurate seek
                 } else {
-                    av_log(NULL, AV_LOG_WARNING, "video accurate_seek is error, is->drop_vframe_count=%d, now = %lld, pts = %lf\n", is->drop_vframe_count, now, pts);
+                    av_log(NULL, AV_LOG_WARNING, "video accurate_seek is error, is->drop_vframe_count=%d, now = %"PRId64", pts = %lf\n", is->drop_vframe_count, now, pts);
                     video_accurate_seek_fail = 1;  // if KEY_FRAME interval too big, disable accurate seek
                 }
             } else {
-                av_log(NULL, AV_LOG_INFO, "video accurate_seek is ok, is->drop_vframe_count =%d, is->seek_pos=%lld, pts=%lf\n", is->drop_vframe_count, is->seek_pos, pts);
+                av_log(NULL, AV_LOG_INFO, "video accurate_seek is ok, is->drop_vframe_count=%d, is->seek_pos=%"PRId64", pts=%lf\n", is->drop_vframe_count, is->seek_pos, pts);
                 if (video_seek_pos == is->seek_pos) {
                     is->drop_vframe_count       = 0;
                     SDL_LockMutex(is->accurate_seek_mutex);
@@ -2019,7 +2019,7 @@ static int audio_thread(void *arg)
                                     is->accurate_seek_start_time = now;
                                 }
                                 SDL_UnlockMutex(is->accurate_seek_mutex);
-                                av_log(NULL, AV_LOG_INFO, "audio accurate_seek start, is->seek_pos=%lld, audio_clock=%lf, is->accurate_seek_start_time = %lld\n", is->seek_pos, audio_clock, is->accurate_seek_start_time);
+                                av_log(NULL, AV_LOG_INFO, "audio accurate_seek start, is->seek_pos=%"PRId64", audio_clock=%lf, is->accurate_seek_start_time=%"PRId64"\n", is->seek_pos, audio_clock, is->accurate_seek_start_time);
                             }
                             is->drop_aframe_count++;
                             while (is->video_accurate_seek_req && !is->abort_request) {
@@ -2051,7 +2051,7 @@ static int audio_thread(void *arg)
                             }
                         } else {
                             if (audio_seek_pos == is->seek_pos) {
-                                av_log(NULL, AV_LOG_INFO, "audio accurate_seek is ok, is->drop_aframe_count=%d, audio_clock = %lf\n", is->drop_aframe_count, audio_clock);
+                                av_log(NULL, AV_LOG_INFO, "audio accurate_seek is ok, is->drop_aframe_count=%d, audio_clock=%lf\n", is->drop_aframe_count, audio_clock);
                                 is->drop_aframe_count       = 0;
                                 SDL_LockMutex(is->accurate_seek_mutex);
                                 is->audio_accurate_seek_req = 0;
@@ -2076,7 +2076,7 @@ static int audio_thread(void *arg)
                         audio_accurate_seek_fail = 1;
                     }
                     if (audio_accurate_seek_fail) {
-                        av_log(NULL, AV_LOG_INFO, "audio accurate_seek is error, is->drop_aframe_count=%d, now = %lld, audio_clock = %lf\n", is->drop_aframe_count, now, audio_clock);
+                        av_log(NULL, AV_LOG_INFO, "audio accurate_seek is error, is->drop_aframe_count=%d, now=%"PRId64", audio_clock=%lf\n", is->drop_aframe_count, now, audio_clock);
                         is->drop_aframe_count       = 0;
                         SDL_LockMutex(is->accurate_seek_mutex);
                         is->audio_accurate_seek_req = 0;
@@ -2827,7 +2827,7 @@ static int stream_component_open(FFPlayer *ffp, int stream_index)
     ret = avcodec_parameters_to_context(avctx, ic->streams[stream_index]->codecpar);
     if (ret < 0)
         goto fail;
-    av_codec_set_pkt_timebase(avctx, ic->streams[stream_index]->time_base);
+    avctx->pkt_timebase = ic->streams[stream_index]->time_base;
 
     codec = avcodec_find_decoder(avctx->codec_id);
 
@@ -2849,12 +2849,12 @@ static int stream_component_open(FFPlayer *ffp, int stream_index)
     }
 
     avctx->codec_id = codec->id;
-    if(stream_lowres > av_codec_get_max_lowres(codec)){
+    if(stream_lowres > codec->max_lowres){
         av_log(avctx, AV_LOG_WARNING, "The maximum value for lowres supported by the decoder is %d\n",
-                av_codec_get_max_lowres(codec));
-        stream_lowres = av_codec_get_max_lowres(codec);
+                codec->max_lowres);
+        stream_lowres = codec->max_lowres;
     }
-    av_codec_set_lowres(avctx, stream_lowres);
+    avctx->lowres = stream_lowres;
 
 #if FF_API_EMU_EDGE
     if(stream_lowres) avctx->flags |= CODEC_FLAG_EMU_EDGE;
@@ -3049,8 +3049,8 @@ static int is_realtime(AVFormatContext *s)
     )
         return 1;
 
-    if(s->pb && (   !strncmp(s->filename, "rtp:", 4)
-                 || !strncmp(s->filename, "udp:", 4)
+    if(s->pb && (   !strncmp(s->url, "rtp:", 4)
+                 || !strncmp(s->url, "udp:", 4)
                 )
     )
         return 1;
@@ -3377,7 +3377,7 @@ static int read_thread(void *arg)
             ret = avformat_seek_file(is->ic, -1, seek_min, seek_target, seek_max, is->seek_flags);
             if (ret < 0) {
                 av_log(NULL, AV_LOG_ERROR,
-                       "%s: error while seeking\n", is->ic->filename);
+                       "%s: error while seeking\n", is->ic->url);
             } else {
                 if (is->audio_stream >= 0) {
                     packet_queue_flush(&is->audioq);
@@ -3771,27 +3771,6 @@ static int video_refresh_thread(void *arg)
     return 0;
 }
 
-static int lockmgr(void **mtx, enum AVLockOp op)
-{
-    switch (op) {
-    case AV_LOCK_CREATE:
-        *mtx = SDL_CreateMutex();
-        if (!*mtx) {
-            av_log(NULL, AV_LOG_FATAL, "SDL_CreateMutex(): %s\n", SDL_GetError());
-            return 1;
-        }
-        return 0;
-    case AV_LOCK_OBTAIN:
-        return !!SDL_LockMutex(*mtx);
-    case AV_LOCK_RELEASE:
-        return !!SDL_UnlockMutex(*mtx);
-    case AV_LOCK_DESTROY:
-        SDL_DestroyMutex(*mtx);
-        return 0;
-    }
-    return 1;
-}
-
 // FFP_MERGE: main
 
 /*****************************************************************************
@@ -3869,20 +3848,17 @@ void ffp_global_init()
 
     ALOGD("ijkmediaplayer version : %s", ijkmp_version());
     /* register all codecs, demux and protocols */
-    avcodec_register_all();
 #if CONFIG_AVDEVICE
     avdevice_register_all();
 #endif
 #if CONFIG_AVFILTER
     avfilter_register_all();
 #endif
-    av_register_all();
 
     ijkav_register_all();
 
     avformat_network_init();
 
-    av_lockmgr_register(lockmgr);
     av_log_set_callback(ffp_log_callback_brief);
 
     av_init_packet(&flush_pkt);
@@ -3895,8 +3871,6 @@ void ffp_global_uninit()
 {
     if (!g_ffmpeg_global_inited)
         return;
-
-    av_lockmgr_register(NULL);
 
     // FFP_MERGE: uninit_opts
 
@@ -4134,7 +4108,9 @@ void *ffp_set_ijkio_inject_opaque(FFPlayer *ffp, void *opaque)
     ijkio_manager_destroyp(&ffp->ijkio_manager_ctx);
     ijkio_manager_create(&ffp->ijkio_manager_ctx, ffp);
     ijkio_manager_set_callback(ffp->ijkio_manager_ctx, ijkio_app_func_event);
+#ifndef ANDROID
     ffp_set_option_int(ffp, FFP_OPT_CATEGORY_FORMAT, "ijkiomanager", (int64_t)(intptr_t)ffp->ijkio_manager_ctx);
+#endif
 
     return prev_weak_thiz;
 }
@@ -4148,7 +4124,9 @@ void *ffp_set_inject_opaque(FFPlayer *ffp, void *opaque)
 
     av_application_closep(&ffp->app_ctx);
     av_application_open(&ffp->app_ctx, ffp);
+#ifndef ANDROID
     ffp_set_option_int(ffp, FFP_OPT_CATEGORY_FORMAT, "ijkapplication", (int64_t)(intptr_t)ffp->app_ctx);
+#endif
 
     ffp->app_ctx->func_on_app_event = app_func_event;
     return prev_weak_thiz;

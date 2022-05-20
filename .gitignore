@@ -2,13 +2,15 @@
 build/
 ffmpeg-temp/
 android/ffmpeg-*
+android/libxml2*
 android/openssl-*
+android/x264-*
 ios/ffmpeg-*
 ios/openssl-*
 extra
 .DS_Store
 ijkmedia/ijkyuv/
-ijkmedia/ijksoundtouch
+ijkmedia/ijksoundtouch/
 ijkprof/android-ndk-profiler/
 
 # built application files

@@ -1,0 +1,46 @@
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId GROUP
+            version VERSION_NAME
+            artifactId POM_ARTIFACT_ID
+            artifact("$buildDir/outputs/aar/${artifactId}-release.aar")
+
+            pom.withXml {
+                def dependencies = asNode().appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
+                    if (!it.group) {
+                        return
+                    }
+                    def dependency = dependencies.appendNode('dependency')
+                    dependency.appendNode('groupId', it.group)
+                    dependency.appendNode('artifactId', it.name)
+                    dependency.appendNode('version', it.version)
+                }
+            }
+        }
+    }
+}
+
+artifactory {
+    contextUrl = 'https://maven.wiseplay.tv/artifactory'
+
+    publish {
+        repository {
+            repoKey = 'libs-release-local'
+
+            username = wiseplay_artifactory_username
+            password = wiseplay_artifactory_password
+        }
+        defaults {
+            publications('aar')
+            publishArtifacts = true
+
+            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
+            publishPom = true
+        }
+    }
+}

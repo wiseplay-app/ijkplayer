@@ -33,7 +33,6 @@
 #include "j4a/class/tv/danmaku/ijk/media/player/misc/IAndroidIO.h"
 #include "ijksdl/ijksdl_log.h"
 #include "../ff_ffplay.h"
-#include "ffmpeg_api_jni.h"
 #include "ijkplayer_android_def.h"
 #include "ijkplayer_android.h"
 #include "ijksdl/android/ijksdl_android_jni.h"
@@ -1200,8 +1199,6 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 
     ijkmp_global_init();
     ijkmp_global_set_inject_callback(inject_callback);
-
-    FFmpegApi_global_init(env);
 
     return JNI_VERSION_1_4;
 }

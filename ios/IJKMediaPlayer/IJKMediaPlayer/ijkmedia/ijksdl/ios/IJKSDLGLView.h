@@ -25,6 +25,7 @@
 
 #import <UIKit/UIKit.h>
 #import "IJKSDLGLViewProtocol.h"
+#import "MDExt.h"
 
 #include "ijksdl/ijksdl_vout.h"
 

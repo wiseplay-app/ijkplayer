@@ -1,4 +1,9 @@
 build
+dav1d*
 ffmpeg-*
+libiconv-android
 libsoxr-*
+libxml2*
 openssl-*
+speex
+x264-*

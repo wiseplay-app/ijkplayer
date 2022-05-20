@@ -40,7 +40,7 @@ fi
 
 
 FF_BUILD_ROOT=`pwd`
-FF_ANDROID_PLATFORM=android-9
+FF_ANDROID_PLATFORM=android-16
 
 
 FF_BUILD_NAME=
@@ -58,7 +58,7 @@ FF_EXTRA_CFLAGS=
 FF_EXTRA_LDFLAGS=
 FF_DEP_LIBS=
 
-FF_MODULE_DIRS="compat libavcodec libavfilter libavformat libavutil libswresample libswscale"
+FF_MODULE_DIRS="compat libavcodec libavfilter libavfilter/dnn libavformat libavresample libswresample libswscale libavutil"
 FF_ASSEMBLER_SUB_DIRS=
 
 
@@ -78,7 +78,9 @@ FF_GCC_64_VER=$IJK_GCC_64_VER
 if [ "$FF_ARCH" = "armv7a" ]; then
     FF_BUILD_NAME=ffmpeg-armv7a
     FF_BUILD_NAME_OPENSSL=openssl-armv7a
+    FF_BUILD_NAME_X264=x264-armv7a
     FF_BUILD_NAME_LIBSOXR=libsoxr-armv7a
+    FF_ARCH_NAME=armeabi-v7a
     FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
 
     FF_CROSS_PREFIX=arm-linux-androideabi
@@ -96,7 +98,9 @@ if [ "$FF_ARCH" = "armv7a" ]; then
 elif [ "$FF_ARCH" = "armv5" ]; then
     FF_BUILD_NAME=ffmpeg-armv5
     FF_BUILD_NAME_OPENSSL=openssl-armv5
+    FF_BUILD_NAME_X264=x264-armv5
     FF_BUILD_NAME_LIBSOXR=libsoxr-armv5
+    FF_ARCH_NAME=armeabi
     FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
 
     FF_CROSS_PREFIX=arm-linux-androideabi
@@ -109,36 +113,57 @@ elif [ "$FF_ARCH" = "armv5" ]; then
 
     FF_ASSEMBLER_SUB_DIRS="arm"
 
+elif [ "$FF_ARCH" = "mips" ]; then
+    FF_BUILD_NAME=ffmpeg-mips
+    FF_BUILD_NAME_OPENSSL=openssl-mips
+    FF_BUILD_NAME_X264=x264-mips
+    FF_ARCH_NAME=mips
+    FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
+
+    FF_CROSS_PREFIX=mipsel-linux-android
+    FF_TOOLCHAIN_NAME=${FF_CROSS_PREFIX}-${FF_GCC_VER}
+
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --arch=mips --cpu=mips32r2"
+
+    FF_EXTRA_CFLAGS="$FF_EXTRA_CFLAGS"
+    FF_EXTRA_LDFLAGS="$FF_EXTRA_LDFLAGS"
+
+    FF_ASSEMBLER_SUB_DIRS="mips"
+
 elif [ "$FF_ARCH" = "x86" ]; then
     FF_BUILD_NAME=ffmpeg-x86
     FF_BUILD_NAME_OPENSSL=openssl-x86
+    FF_BUILD_NAME_X264=x264-x86
     FF_BUILD_NAME_LIBSOXR=libsoxr-x86
+    FF_ARCH_NAME=x86
     FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
 
     FF_CROSS_PREFIX=i686-linux-android
     FF_TOOLCHAIN_NAME=x86-${FF_GCC_VER}
 
-    FF_CFG_FLAGS="$FF_CFG_FLAGS --arch=x86 --cpu=i686 --enable-yasm"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --arch=x86 --cpu=i686"
 
     FF_EXTRA_CFLAGS="$FF_EXTRA_CFLAGS -march=atom -msse3 -ffast-math -mfpmath=sse"
     FF_EXTRA_LDFLAGS="$FF_EXTRA_LDFLAGS"
 
-    FF_ASSEMBLER_SUB_DIRS="x86"
+    #FF_ASSEMBLER_SUB_DIRS="x86"
 
 elif [ "$FF_ARCH" = "x86_64" ]; then
     FF_ANDROID_PLATFORM=android-21
 
     FF_BUILD_NAME=ffmpeg-x86_64
     FF_BUILD_NAME_OPENSSL=openssl-x86_64
+    FF_BUILD_NAME_X264=x264-x86_64
     FF_BUILD_NAME_LIBSOXR=libsoxr-x86_64
+    FF_ARCH_NAME=x86_64
     FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
 
     FF_CROSS_PREFIX=x86_64-linux-android
     FF_TOOLCHAIN_NAME=${FF_CROSS_PREFIX}-${FF_GCC_64_VER}
 
-    FF_CFG_FLAGS="$FF_CFG_FLAGS --arch=x86_64 --enable-yasm"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --arch=x86_64"
 
-    FF_EXTRA_CFLAGS="$FF_EXTRA_CFLAGS"
+    FF_EXTRA_CFLAGS="$FF_EXTRA_CFLAGS -msse4.2 -mpopcnt -m64 -mtune=intel"
     FF_EXTRA_LDFLAGS="$FF_EXTRA_LDFLAGS"
 
     FF_ASSEMBLER_SUB_DIRS="x86"
@@ -148,13 +173,15 @@ elif [ "$FF_ARCH" = "arm64" ]; then
 
     FF_BUILD_NAME=ffmpeg-arm64
     FF_BUILD_NAME_OPENSSL=openssl-arm64
+    FF_BUILD_NAME_X264=x264-arm64
     FF_BUILD_NAME_LIBSOXR=libsoxr-arm64
+    FF_ARCH_NAME=arm64-v8a
     FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
 
     FF_CROSS_PREFIX=aarch64-linux-android
     FF_TOOLCHAIN_NAME=${FF_CROSS_PREFIX}-${FF_GCC_64_VER}
 
-    FF_CFG_FLAGS="$FF_CFG_FLAGS --arch=aarch64 --enable-yasm"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --arch=aarch64"
 
     FF_EXTRA_CFLAGS="$FF_EXTRA_CFLAGS"
     FF_EXTRA_LDFLAGS="$FF_EXTRA_LDFLAGS"
@@ -180,8 +207,18 @@ FF_MAKE_TOOLCHAIN_FLAGS="$FF_MAKE_TOOLCHAIN_FLAGS --install-dir=$FF_TOOLCHAIN_PA
 
 FF_SYSROOT=$FF_TOOLCHAIN_PATH/sysroot
 FF_PREFIX=$FF_BUILD_ROOT/build/$FF_BUILD_NAME/output
+FF_DEP_DAV1D_INC=$FF_BUILD_ROOT/dav1d/dav1d/include
+FF_DEP_DAV1D_INC_ARCH=$FF_BUILD_ROOT/dav1d/build-$FF_ARCH_NAME/include/dav1d
+FF_DEP_DAV1D_LIB=$FF_BUILD_ROOT/dav1d/build-$FF_ARCH_NAME/src
+FF_DEP_ICONV_INC=$FF_BUILD_ROOT/libxml2/libiconv/include
 FF_DEP_OPENSSL_INC=$FF_BUILD_ROOT/build/$FF_BUILD_NAME_OPENSSL/output/include
 FF_DEP_OPENSSL_LIB=$FF_BUILD_ROOT/build/$FF_BUILD_NAME_OPENSSL/output/lib
+FF_DEP_SPEEX_INC=$FF_BUILD_ROOT/speex/include
+FF_DEP_SPEEX_LIB=$FF_BUILD_ROOT/speex/obj/local/$FF_ARCH_NAME
+FF_DEP_X264_INC=$FF_BUILD_ROOT/build/$FF_BUILD_NAME_X264/output/include
+FF_DEP_X264_LIB=$FF_BUILD_ROOT/build/$FF_BUILD_NAME_X264/output/lib
+FF_DEP_XML2_INC=$FF_BUILD_ROOT/libxml2/libxml2/include
+FF_DEP_XML2_LIB=$FF_BUILD_ROOT/libxml2/android/obj/local/$FF_ARCH_NAME
 FF_DEP_LIBSOXR_INC=$FF_BUILD_ROOT/build/$FF_BUILD_NAME_LIBSOXR/output/include
 FF_DEP_LIBSOXR_LIB=$FF_BUILD_ROOT/build/$FF_BUILD_NAME_LIBSOXR/output/lib
 
@@ -213,8 +250,9 @@ echo "--------------------"
 echo "[*] check ffmpeg env"
 echo "--------------------"
 export PATH=$FF_TOOLCHAIN_PATH/bin/:$PATH
-#export CC="ccache ${FF_CROSS_PREFIX}-gcc"
-export CC="${FF_CROSS_PREFIX}-gcc"
+#export CC="ccache ${FF_CROSS_PREFIX}-clang"
+export CC="${FF_CROSS_PREFIX}-clang"
+export CXX="${FF_CROSS_PREFIX}-clang++"
 export LD=${FF_CROSS_PREFIX}-ld
 export AR=${FF_CROSS_PREFIX}-ar
 export STRIP=${FF_CROSS_PREFIX}-strip
@@ -223,7 +261,7 @@ FF_CFLAGS="-O3 -Wall -pipe \
     -std=c99 \
     -ffast-math \
     -fstrict-aliasing -Werror=strict-aliasing \
-    -Wno-psabi -Wa,--noexecstack \
+    -Wa,--noexecstack \
     -DANDROID -DNDEBUG"
 
 # cause av_strlcpy crash with gcc4.7, gcc4.8
@@ -240,6 +278,28 @@ export COMMON_FF_CFG_FLAGS=
 
 
 #--------------------
+# with dav1d
+if [ -f "${FF_DEP_DAV1D_LIB}/libdav1d.a" ]; then
+    echo "dav1d detected"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-libdav1d"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-decoder=libdav1d"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-parser=av1"
+
+    FF_CFLAGS="$FF_CFLAGS -I${FF_DEP_DAV1D_INC} -I${FF_DEP_DAV1D_INC_ARCH}"
+    FF_DEP_LIBS="$FF_DEP_LIBS -L${FF_DEP_DAV1D_LIB} -ldav1d"
+fi
+
+#--------------------
+# with libxml2
+if [ -f "${FF_DEP_XML2_LIB}/libxml2.a" ]; then
+    echo "libxml2 detected"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-libxml2"
+
+    FF_CFLAGS="$FF_CFLAGS -I${FF_DEP_ICONV_INC} -I${FF_DEP_XML2_INC}"
+    FF_DEP_LIBS="$FF_DEP_LIBS -L${FF_DEP_XML2_LIB} -lxml2 -liconv"
+fi
+
+#--------------------
 # with openssl
 if [ -f "${FF_DEP_OPENSSL_LIB}/libssl.a" ]; then
     echo "OpenSSL detected"
@@ -250,6 +310,30 @@ if [ -f "${FF_DEP_OPENSSL_LIB}/libssl.a" ]; then
     FF_DEP_LIBS="$FF_DEP_LIBS -L${FF_DEP_OPENSSL_LIB} -lssl -lcrypto"
 fi
 
+#--------------------
+# with speex
+if [ -f "${FF_DEP_SPEEX_LIB}/libspeex.a" ]; then
+    echo "speex detected"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-libspeex"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-decoder=libspeex"
+
+    FF_CFLAGS="$FF_CFLAGS -I${FF_DEP_SPEEX_INC}"
+    FF_DEP_LIBS="$FF_DEP_LIBS -L${FF_DEP_SPEEX_LIB} -lspeex"
+fi
+
+#--------------------
+# with x264
+if [ -f "${FF_DEP_X264_LIB}/libx264.a" ]; then
+    echo "x264 detected"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-gpl"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-nonfree"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-libx264"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-encoder=libx264"
+
+    FF_CFLAGS="$FF_CFLAGS -I${FF_DEP_X264_INC}"
+    FF_DEP_LIBS="$FF_DEP_LIBS -L${FF_DEP_X264_LIB} -lx264"
+fi
+
 if [ -f "${FF_DEP_LIBSOXR_LIB}/libsoxr.a" ]; then
     echo "libsoxr detected"
     FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-libsoxr"
@@ -258,7 +342,8 @@ if [ -f "${FF_DEP_LIBSOXR_LIB}/libsoxr.a" ]; then
     FF_DEP_LIBS="$FF_DEP_LIBS -L${FF_DEP_LIBSOXR_LIB} -lsoxr"
 fi
 
-FF_CFG_FLAGS="$FF_CFG_FLAGS $COMMON_FF_CFG_FLAGS"
+
+FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS $FF_CFG_FLAGS"
 
 #--------------------
 # Standard options:
@@ -271,8 +356,9 @@ FF_CFG_FLAGS="$FF_CFG_FLAGS --target-os=linux"
 FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-pic"
 # FF_CFG_FLAGS="$FF_CFG_FLAGS --disable-symver"
 
-if [ "$FF_ARCH" = "x86" ]; then
+if [ "$FF_ARCH" = "x86" ] || [ "$FF_ARCH" = "x86_64" ]; then
     FF_CFG_FLAGS="$FF_CFG_FLAGS --disable-asm"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --disable-x86asm"
 else
     # Optimization options (experts only):
     FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-asm"
@@ -287,7 +373,7 @@ case "$FF_BUILD_OPT" in
     ;;
     *)
         FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-optimizations"
-        FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-debug"
+        FF_CFG_FLAGS="$FF_CFG_FLAGS --disable-debug"
         FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-small"
     ;;
 esac

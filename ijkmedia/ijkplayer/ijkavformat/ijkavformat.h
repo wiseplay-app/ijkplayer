@@ -26,5 +26,6 @@
 #define AVFORMAT_IJKAVFORMAT_H
 
 #define AV_PKT_FLAG_DISCONTINUITY 0x0100
+#define AV_PKT_FLAG_NEW_SEG       0x8000
 
 #endif

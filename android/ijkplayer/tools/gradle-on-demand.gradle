@@ -17,6 +17,9 @@
 gradle.startParameter.taskNames.each { task ->
     def taskName = task.split(":").last()
     switch (taskName) {
+        case "artifactoryPublish":
+            apply from: new File(rootProject.projectDir, 'tools/gradle-artifactory-publish.gradle')
+            break;
         case "uploadArchives":
             apply from: new File(rootProject.projectDir, 'tools/gradle-mvn-push.gradle')
             break;

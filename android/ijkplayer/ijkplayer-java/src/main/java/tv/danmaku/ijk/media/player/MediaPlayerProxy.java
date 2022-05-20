@@ -111,6 +111,21 @@ public class MediaPlayerProxy implements IMediaPlayer {
     public void setScreenOnWhilePlaying(boolean screenOn) {
         mBackEndMediaPlayer.setScreenOnWhilePlaying(screenOn);
     }
+    
+    @Override
+    public int getSelectedTrack(int trackType) {
+        return mBackEndMediaPlayer.getSelectedTrack(trackType);
+    }
+
+    @Override
+    public void selectTrack(int track) {
+        mBackEndMediaPlayer.selectTrack(track);
+    }
+
+    @Override
+    public void deselectTrack(int track) {
+        mBackEndMediaPlayer.deselectTrack(track);
+    }
 
     @Override
     public int getVideoWidth() {
@@ -335,5 +350,15 @@ public class MediaPlayerProxy implements IMediaPlayer {
     @Override
     public boolean isLooping() {
         return mBackEndMediaPlayer.isLooping();
+    }
+
+    @Override
+    public float getSpeed() {
+        return mBackEndMediaPlayer.getSpeed();
+    }
+
+    @Override
+    public void setSpeed(float speed) {
+        mBackEndMediaPlayer.setSpeed(speed);
     }
 }

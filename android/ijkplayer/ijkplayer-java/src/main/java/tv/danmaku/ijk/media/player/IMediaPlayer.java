@@ -95,6 +95,12 @@ public interface IMediaPlayer {
 
     void setScreenOnWhilePlaying(boolean screenOn);
 
+    int getSelectedTrack(int trackType);
+
+    void selectTrack(int track);
+
+    void deselectTrack(int track);
+
     int getVideoWidth();
 
     int getVideoHeight();
@@ -197,6 +203,10 @@ public interface IMediaPlayer {
     void setLooping(boolean looping);
 
     boolean isLooping();
+
+    float getSpeed();
+
+    void setSpeed(float speed);
 
     /*--------------------
      * AndroidMediaPlayer: JELLY_BEAN

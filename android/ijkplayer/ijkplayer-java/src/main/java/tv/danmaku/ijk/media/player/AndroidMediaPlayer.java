@@ -23,6 +23,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaDataSource;
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
 import android.media.TimedText;
 import android.net.Uri;
 import android.os.Build;
@@ -190,6 +191,21 @@ public class AndroidMediaPlayer extends AbstractMediaPlayer {
     public ITrackInfo[] getTrackInfo() {
         return AndroidTrackInfo.fromMediaPlayer(mInternalMediaPlayer);
     }
+    
+    @Override
+    public int getSelectedTrack(int trackType) {
+        return mInternalMediaPlayer.getSelectedTrack(trackType);
+    }
+
+    @Override
+    public void selectTrack(int track) {
+        mInternalMediaPlayer.selectTrack(track);
+    }
+
+    @Override
+    public void deselectTrack(int track) {
+        mInternalMediaPlayer.deselectTrack(track);
+    }
 
     @Override
     public int getVideoWidth() {
@@ -275,6 +291,26 @@ public class AndroidMediaPlayer extends AbstractMediaPlayer {
     @Override
     public boolean isLooping() {
         return mInternalMediaPlayer.isLooping();
+    }
+
+    @Override
+    public float getSpeed() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return 1f;
+        }
+        PlaybackParams params = mInternalMediaPlayer.getPlaybackParams();
+        return params.getSpeed();
+    }
+
+    @Override
+    public void setSpeed(float speed) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+        PlaybackParams params = new PlaybackParams();
+        params.setPitch(speed);
+        params.setSpeed(speed);
+        mInternalMediaPlayer.setPlaybackParams(params);
     }
 
     @Override

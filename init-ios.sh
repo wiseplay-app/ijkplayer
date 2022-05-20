@@ -18,8 +18,8 @@
 
 # IJK_FFMPEG_UPSTREAM=git://git.videolan.org/ffmpeg.git
 IJK_FFMPEG_UPSTREAM=https://github.com/Bilibili/FFmpeg.git
-IJK_FFMPEG_FORK=https://github.com/Bilibili/FFmpeg.git
-IJK_FFMPEG_COMMIT=ff3.4--ijk0.8.7--20180103--001
+IJK_FFMPEG_FORK=https://github.com/wiseplay-app/ijkplayer-ffmpeg.git
+IJK_FFMPEG_COMMIT=ff4.3--ijk0.8.8--20201002--001
 IJK_FFMPEG_LOCAL_REPO=extra/ffmpeg
 
 IJK_GASP_UPSTREAM=https://github.com/Bilibili/gas-preprocessor.git
@@ -62,7 +62,7 @@ function pull_fork() {
     echo "== pull ffmpeg fork $1 =="
     sh $TOOLS/pull-repo-ref.sh $IJK_FFMPEG_FORK ios/ffmpeg-$1 ${IJK_FFMPEG_LOCAL_REPO}
     cd ios/ffmpeg-$1
-    git checkout ${IJK_FFMPEG_COMMIT} -B ijkplayer
+    git checkout ${IJK_FFMPEG_COMMIT}
     cd -
 }
 
