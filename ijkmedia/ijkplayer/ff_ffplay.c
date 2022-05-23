@@ -86,15 +86,6 @@
 #define AV_CODEC_CAP_DR1 CODEC_CAP_DR1
 #endif
 
-// FIXME: 9 work around NDKr8e or gcc4.7 bug
-// isnan() may not recognize some double NAN, so we test both double and float
-#if defined(__ANDROID__)
-#ifdef isnan
-#undef isnan
-#endif
-#define isnan(x) (isnan((double)(x)) || isnanf((float)(x)))
-#endif
-
 #if defined(__ANDROID__)
 #define printf(...) ALOGD(__VA_ARGS__)
 #endif
@@ -523,7 +514,7 @@ static int convert_image(FFPlayer *ffp, AVFrame *src_frame, int64_t src_frame_pt
         goto fail2;
     }
 
-    ret = avcodec_encode_video2(img_info->frame_img_codec_ctx, &avpkt, dst_frame, &got_packet);
+    ret = img_info->frame_img_codec_ctx->codec->encode2(img_info->frame_img_codec_ctx, &avpkt, dst_frame, &got_packet);
 
     if (ret >= 0 && got_packet > 0) {
         strcpy(file_path, img_info->img_path);
