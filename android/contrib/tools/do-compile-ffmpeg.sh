@@ -221,6 +221,8 @@ FF_DEP_XML2_INC=$FF_BUILD_ROOT/libxml2/libxml2/include
 FF_DEP_XML2_LIB=$FF_BUILD_ROOT/libxml2/android/obj/local/$FF_ARCH_NAME
 FF_DEP_LIBSOXR_INC=$FF_BUILD_ROOT/build/$FF_BUILD_NAME_LIBSOXR/output/include
 FF_DEP_LIBSOXR_LIB=$FF_BUILD_ROOT/build/$FF_BUILD_NAME_LIBSOXR/output/lib
+FF_DEP_VPX_INC=$FF_BUILD_ROOT/vpx-android/android/$FF_ARCH_NAME/include
+FF_DEP_VPX_LIB=$FF_BUILD_ROOT/vpx-android/android/$FF_ARCH_NAME/lib
 
 case "$UNAME_S" in
     CYGWIN_NT-*)
@@ -319,6 +321,17 @@ if [ -f "${FF_DEP_SPEEX_LIB}/libspeex.a" ]; then
 
     FF_CFLAGS="$FF_CFLAGS -I${FF_DEP_SPEEX_INC}"
     FF_DEP_LIBS="$FF_DEP_LIBS -L${FF_DEP_SPEEX_LIB} -lspeex"
+fi
+
+#--------------------
+# with vpx
+if [ -f "${FF_DEP_VPX_LIB}/libvpx.a" ]; then
+    echo "vpx detected"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-libvpx"
+    FF_CFG_FLAGS="$FF_CFG_FLAGS --enable-encoder=libvpx_vp8"
+
+    FF_CFLAGS="$FF_CFLAGS -I${FF_DEP_VPX_INC}"
+    FF_DEP_LIBS="$FF_DEP_LIBS -L${FF_DEP_VPX_LIB} -lvpx"
 fi
 
 #--------------------
