@@ -2,6 +2,7 @@
  * Copyright (c) 2003 Bilibili
  * Copyright (c) 2003 Fabrice Bellard
  * Copyright (c) 2013 Zhang Rui <bbcallen@gmail.com>
+ * Copyright (c) 2014-2022 3U Digital Business Ltd
  *
  * This file is part of ijkPlayer.
  *

@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2016 Bilibili
  * Copyright (c) 2016 Raymond Zheng <raymondzheng1412@gmail.com>
+ * Copyright (c) 2016-2022 3U Digital Business Ltd
  *
  * This file is part of ijkPlayer.
  *

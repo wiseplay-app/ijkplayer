@@ -3,6 +3,7 @@
  *      based on FFmpegMediaMetadataRetriever/mediametadataretriever.h
  *
  * Copyright (c) 2014 William Seemann
+ * Copyright (c) 2014-2022 3U Digital Business Ltd
  *
  * This file is part of ijkPlayer.
  *

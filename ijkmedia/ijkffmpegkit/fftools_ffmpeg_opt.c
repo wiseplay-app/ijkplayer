@@ -3,6 +3,8 @@
  *
  * This file is part of FFmpeg.
  *
+ * Changes by 3U Digital Business Ltd - Copyright (c) 2021-2022
+ *
  * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either

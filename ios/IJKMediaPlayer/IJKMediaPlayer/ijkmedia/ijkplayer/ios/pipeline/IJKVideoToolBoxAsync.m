@@ -3,6 +3,7 @@
  *****************************************************************************
  *
  * copyright (c) 2014 Zhou Quan <zhouqicy@gmail.com>
+ * copyright (c) 2014-2022 3U Digital Business Ltd
  *
  * This file is part of ijkPlayer.
  *

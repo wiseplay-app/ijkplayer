@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2014 Bilibili
  * Copyright (c) 2014 Zhang Rui <bbcallen@gmail.com>
+ * Copyright (c) 2014-2022 3U Digital Business Ltd
  *
  * This file is part of ijkPlayer.
  *

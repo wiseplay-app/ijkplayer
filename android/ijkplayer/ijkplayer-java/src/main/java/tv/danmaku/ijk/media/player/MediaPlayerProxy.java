@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015 Bilibili
  * Copyright (C) 2015 Zhang Rui <bbcallen@gmail.com>
+ * Copyright (C) 2015-2022 3U Digital Business Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2000-2003 Fabrice Bellard
+ * Copyright (c) 2014-2022 3U Digital Business Ltd
  *
  * This file is part of FFmpeg.
  *

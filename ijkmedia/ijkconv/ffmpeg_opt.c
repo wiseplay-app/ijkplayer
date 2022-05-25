@@ -2,6 +2,8 @@
  * ffmpeg option parsing
  *
  * This file is part of FFmpeg.
+ * 
+ * Changes by 3U Digital Business Ltd - Copyright (c) 2014-2022
  *
  * FFmpeg is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
