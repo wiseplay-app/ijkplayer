@@ -26,20 +26,19 @@ publishing {
 }
 
 artifactory {
-    contextUrl = 'https://maven.wiseplay.tv/artifactory'
+    contextUrl = WISEPLAY_ARTIFACTORY_URL
 
     publish {
         repository {
-            repoKey = 'libs-release-local'
+            repoKey = WISEPLAY_ARTIFACTORY_REPO_KEY
 
-            username = wiseplay_artifactory_username
-            password = wiseplay_artifactory_password
+            username = WISEPLAY_ARTIFACTORY_NAME
+            password = WISEPLAY_ARTIFACTORY_PASSWORD
         }
         defaults {
             publications('aar')
             publishArtifacts = true
 
-            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
             publishPom = true
         }
     }

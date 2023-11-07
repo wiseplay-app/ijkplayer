@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 #
 # Copyright (C) 2019-2022 3U Digital Business Ltd
+# Copyright (C) 2023 Apollo Apps, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,8 +16,8 @@
 # limitations under the License.
 #
 
-IJK_DAV1D_UPSTREAM=https://gitlab.com/wiseplay/ijkplayer-dav1d-android.git
-IJK_DAV1D_COMMIT=master
+IJK_DAV1D_UPSTREAM=git@github.com:wiseplay-app/ijkplayer-dav1d-android.git
+IJK_DAV1D_COMMIT=main
 IJK_DAV1D_LOCAL_REPO=extra/dav1d
 
 set -e
@@ -27,3 +28,5 @@ sh $TOOLS/pull-repo-base.sh $IJK_DAV1D_UPSTREAM $IJK_DAV1D_LOCAL_REPO
 
 echo "== pull dav1d fork =="
 sh $TOOLS/pull-repo-ref.sh $IJK_DAV1D_UPSTREAM android/contrib/dav1d ${IJK_DAV1D_LOCAL_REPO}
+
+echo "Done!"

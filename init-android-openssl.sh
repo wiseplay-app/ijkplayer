@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2013-2015 Bilibili
 # Copyright (C) 2013-2015 Zhang Rui <bbcallen@gmail.com>
+# Copyright (C) 2023 Apollo Apps, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +19,7 @@
 
 IJK_OPENSSL_UPSTREAM=https://github.com/openssl/openssl.git
 IJK_OPENSSL_FORK=https://github.com/openssl/openssl.git
-IJK_OPENSSL_COMMIT=OpenSSL_1_1_1c
+IJK_OPENSSL_COMMIT=OpenSSL_1_1_1w
 IJK_OPENSSL_LOCAL_REPO=extra/openssl
 
 set -e

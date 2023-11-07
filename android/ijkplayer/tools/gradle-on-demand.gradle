@@ -26,6 +26,9 @@ gradle.startParameter.taskNames.each { task ->
         case "bintrayUpload":
             apply from: new File(rootProject.projectDir, 'tools/gradle-bintray-upload.gradle')
             break;
+        case "publishToMavenLocal":
+            apply from: new File(rootProject.projectDir, 'tools/gradle-artifactory-local-publish.gradle')
+            break;
         default:
             // do nothing
             break;
