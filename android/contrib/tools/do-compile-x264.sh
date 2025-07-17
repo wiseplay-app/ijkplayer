@@ -34,7 +34,7 @@ fi
 
 
 FF_BUILD_ROOT=`pwd`
-FF_ANDROID_PLATFORM=android-16
+FF_ANDROID_PLATFORM=android-25
 
 
 FF_BUILD_NAME=
@@ -98,7 +98,7 @@ elif [ "$FF_ARCH" = "x86" ]; then
     FF_CFG_FLAGS="$FF_CFG_FLAGS --host=i686-linux"
 
 elif [ "$FF_ARCH" = "x86_64" ]; then
-    FF_ANDROID_PLATFORM=android-21
+    FF_ANDROID_PLATFORM=android-25
 
     FF_BUILD_NAME=x264-x86_64
     FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
@@ -109,7 +109,7 @@ elif [ "$FF_ARCH" = "x86_64" ]; then
     FF_CFG_FLAGS="$FF_CFG_FLAGS --host=x86_64-linux"
 
 elif [ "$FF_ARCH" = "arm64" ]; then
-    FF_ANDROID_PLATFORM=android-21
+    FF_ANDROID_PLATFORM=android-25
 
     FF_BUILD_NAME=x264-arm64
     FF_SOURCE=$FF_BUILD_ROOT/$FF_BUILD_NAME
@@ -146,7 +146,7 @@ FF_MAKE_FLAGS=$IJK_MAKE_FLAG
 FF_MAKE_TOOLCHAIN_FLAGS="$FF_MAKE_TOOLCHAIN_FLAGS --install-dir=$FF_TOOLCHAIN_PATH"
 FF_TOOLCHAIN_TOUCH="$FF_TOOLCHAIN_PATH/touch"
 if [ ! -f "$FF_TOOLCHAIN_TOUCH" ]; then
-    $ANDROID_NDK/build/tools/make-standalone-toolchain.sh \
+    $ANDROID_NDK/build/tools/make-standalone-toolchain.py \
         $FF_MAKE_TOOLCHAIN_FLAGS \
         --platform=$FF_ANDROID_PLATFORM \
         --toolchain=$FF_TOOLCHAIN_NAME

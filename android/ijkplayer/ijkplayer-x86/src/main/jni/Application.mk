@@ -19,15 +19,17 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 APP_OPTIM := release
-APP_PLATFORM := android-16
+APP_PLATFORM := android-21
 APP_ABI := x86
-NDK_TOOLCHAIN_VERSION=clang
 APP_PIE := false
 
 APP_STL := c++_static
 
 APP_CFLAGS := -O3 -Wall -pipe \
     -ffast-math \
+    -U_FORTIFY_SOURCE  -D_FORTIFY_SOURCE=0 \
     -fstrict-aliasing -Werror=strict-aliasing \
     -Wa,--noexecstack \
     -DANDROID -DNDEBUG
+
+LOCAL_LDFLAGS += -Wl,-z,max-page-size=16384

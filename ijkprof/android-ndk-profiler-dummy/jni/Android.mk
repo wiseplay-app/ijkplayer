@@ -24,4 +24,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := android-ndk-profiler
 LOCAL_SRC_FILES := prof.c
 
+#Enable 64KB page size
+LOCAL_LDFLAGS += -Wl,-z,max-page-size=16384
+
 include $(BUILD_STATIC_LIBRARY)
